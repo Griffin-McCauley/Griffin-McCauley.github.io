@@ -178,11 +178,13 @@
                                 <p>
                                     There were three main problems that needed to be resolved in order to get the project working:
                                     <br>
-                                    1. Data storage needed to be cheap and scalable.
                                     <br>
-                                    2. Lambda instances needed access to certain Python libraries like pandas and Sklearn.
+                                        1. Data storage needed to be cheap and scalable.
                                     <br>
-                                    3. Lambda instances needed to be  generalizable and scalable with any outputs recorded in permanent storage.
+                                        2. Lambda instances needed access to certain Python libraries like pandas and Sklearn.
+                                    <br>
+                                        3. Lambda instances needed to be  generalizable and scalable with any outputs recorded in permanent storage.
+                                    <br>
                                     <br>
                                     AWS S3 was chosen for data storage due to its flexibility, cost, and pre-built connectivity to Lambda. Setting up S3 was remarkably easy and proved beneficial. Its undefined size allowed buckets to expand as data was processed and outputs were generated.
                                     <br>
@@ -200,20 +202,21 @@
                                 <p>
                                     Generating a random forest model that has been tuned correctly often means building many models to test the hyperparameters. The approach taken in this research was as follows:
                                     <br>
-                                    1. Define a grid of potential parameters. This research optimized the number of features and the minimum leaf node size. Together these form a matrix of potential hyperparameter pairs, each of which must be tested to find the optimal model.
                                     <br>
-                                    2. Iterate over the hyperparameter matrix, training a model on the train dataset each time. Record the validate MSE for each set of hyperparameters.
+                                        1. Define a grid of potential parameters. This research optimized the number of features and the minimum leaf node size. Together these form a matrix of potential hyperparameter pairs, each of which must be tested to find the optimal model.
+                                    <br>
+                                        2. Iterate over the hyperparameter matrix, training a model on the train dataset each time. Record the validate MSE for each set of hyperparameters.
 
 
 
                                     <br>
-                                    3. Select the best model hyperparameters (lowest MSE).
+                                        3. Select the best model hyperparameters (lowest MSE).
                                     <br>
-                                    4. Retrain a new model with a larger number of trees using the train and validate datasets as the training data.
+                                        4. Retrain a new model with a larger number of trees using the train and validate datasets as the training data.
                                     <br>
-                                    5. Test using the final testing holdout set.
+                                        5. Test using the final testing holdout set.
                                     <br>
-                                    6. Store the final model for further use. Repeat the process for each stock.
+                                        6. Store the final model for further use. Repeat the process for each stock.
                                 </p>
                             </div>
                             <h3 class="title is-4">Implementation</h3>
@@ -221,21 +224,23 @@
                                 <p>
                                     In order to implement the desired model design, this research constructed eight Lambda functions. Each would support various components of the analysis:
                                     <br>
-                                    1. Processing - Performs the data cleaning and processing on the raw data files.
                                     <br>
-                                    2. Parampreds - Trains a random forest regression model with a single specified set of hyperparameters on a given stock's training data and produces predictions for the validation set.
+                                        1. Processing - Performs the data cleaning and processing on the raw data files.
                                     <br>
-                                    3. Predmses - Aggregates the predictions from all trees that were trained on the same stock data with the same set of hyperparameters, and computes an overall MSE score for the ensembled prediction.
+                                        2. Parampreds - Trains a random forest regression model with a single specified set of hyperparameters on a given stock's training data and produces predictions for the validation set.
                                     <br>
-                                    4. Minmse - Determines the set of hyperparameters that produced the lowest MSE for a specific stock.
+                                        3. Predmses - Aggregates the predictions from all trees that were trained on the same stock data with the same set of hyperparameters, and computes an overall MSE score for the ensembled prediction.
                                     <br>
-                                    5. Trainfull - Trains a larger random forest on the training and validation data for each stock using the optimally determined hyperparameters and generates predictions using the test set.
+                                        4. Minmse - Determines the set of hyperparameters that produced the lowest MSE for a specific stock.
                                     <br>
-                                    6. Testfull - Evaluates the new model's predictions for a stock's test data by calculating the MSE score.
+                                        5. Trainfull - Trains a larger random forest on the training and validation data for each stock using the optimally determined hyperparameters and generates predictions using the test set.
                                     <br>
-                                    7. Parent - Asynchronously invokes the functions above for each stock (and each permutation of hyperparameters).
+                                        6. Testfull - Evaluates the new model's predictions for a stock's test data by calculating the MSE score.
                                     <br>
-                                    8. Timingmetrics - Assesses the internal runtime metrics produced by these executions.
+                                        7. Parent - Asynchronously invokes the functions above for each stock (and each permutation of hyperparameters).
+                                    <br>
+                                        8. Timingmetrics - Assesses the internal runtime metrics produced by these executions.
+                                    <br>
                                     <br>
                                     Each of these Lambdas was configured to have 3008MB of memory and a 15 minute timeout limit. They were also given full access permissions to both S3 and Lambda via an IAM role to get (put) data from (to) S3 and to invoke other Lambda functions. Lastly, they were equipped with layers that contained the necessary dependencies to run pandas and Sklearn.
                                     <br>
@@ -294,7 +299,7 @@
                                     The primary results of this research focus primarily on runtime and monetary efficiency. While the main intent was to devise a system of optimizing and training a massively distributed random forest in as short a time as feasibly possible, it is important to contextualize the runtime results by evaluating the financial ramifications of the system design. This section will provide an overview of the empirically determined runtime metrics related to invocation, computation, and I/O for each function. It will then move to explaining these findings within the context of the greater AWS computing ecosystem.
                                     <br>
                                     <br>
-                                    With regards to the absolute runtime of the analysis, in a perfectly parallelized setting, one would expect to see a total runtime for each step equal to $\max_{i} runtime_i$ rather than $\sum_{i=1}^{101} runtime_i$ which is what would occur if everything was run sequentially. The empirical versus sequential runtime performance analysis for our implementation is summarized in the tables below.
+                                    With regards to the absolute runtime of the analysis, in a perfectly parallelized setting, one would expect to see a total runtime for each step equal to the maximum of the runtimes rather than the sum of the runtimes which is what would occur if everything was run sequentially. The empirical versus sequential runtime performance analysis for our implementation is summarized in the tables below.
                                     <br>
 
 
@@ -386,7 +391,8 @@
                                     The code of the project can be found at: <a href="https://github.com/Griffin-McCauley/DS5110FinalProject" target="_blank">https://github.com/Griffin-McCauley/DS5110FinalProject</a>
                                     <br>
                                     <br>
-                                    The presentation of the project can be found at: <a href="https://darden-virginia.zoom.us/rec/share/sAEL0XA6vufwKLqaYvapDNtNuwWWz1cZKivLobVFkSev1P3iGUr17jmfEjiZFHxK.1cncyQOlmvNGhuGh?startTime=1683036623000" target="_blank">https://darden-virginia.zoom.us/rec/share/sAEL0XA6vufwKLqaYvapDNtNuwWWz1cZKivLobVFkSev1P3iGUr17jmfEjiZFHxK.1cncyQOlmvNGhuGh?startTime=1683036623000</a>
+                                    The presentation of the project can be found at: 
+                                    <a href="https://darden-virginia.zoom.us/rec/share/sAEL0XA6vufwKLqaYvapDNtNuwWWz1cZKivLobVFkSev1P3iGUr17jmfEjiZFHxK.1cncyQOlmvNGhuGh?startTime=1683036623000" target="_blank">https://darden-virginia.zoom.us/rec/share/sAEL0XA6vufwKLqaYvapDNtNuwWWz1cZKivLobVFkSev1P3iGUr17jmfEjiZFHxK.1cncyQOlmvNGhuGh?startTime=1683036623000</a>
                                 </p>
                             </div>
                         </div>
