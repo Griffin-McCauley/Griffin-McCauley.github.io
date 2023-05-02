@@ -299,7 +299,6 @@
                                     <br>
                                     <br>
                                     With regards to the absolute runtime of the analysis, in a perfectly parallelized setting, one would expect to see a total runtime for each step equal to the maximum of the runtimes rather than the sum of the runtimes which is what would occur if everything was run sequentially. The empirical versus sequential runtime performance analysis for our implementation is summarized in the tables below.
-                                    <br>
                                     <figure>
                                         <img src="Resources/DS 5110/images/3.png" alt="Empirical runtime analysis breakdown for each function" class="center-image"/>
                                         <figcaption>Empirical runtime analysis breakdown for each function</figcaption>
@@ -328,7 +327,6 @@
                             <div class="level-set has-text-justified">
                                 <p>
                                     While the above results speak to the runtime analysis with a specific focus on this research's pipeline, it is important to compare this hyper-parallelized framework to other computing options. For example, a direct comparison can be drawn to potential EC2 configurations within AWS. The tables below show architectural configuration, performance and cost for various AWS computing environments completing the same tasks outlined in this research. It should be noted that the EC2 instance calculations were scaled based on a single stock run on a 4 core, 16 GB machine which ran in 25.48 minutes. This computation repeated 100 times in a row leads to a run time of 43.08 hours. Scaling up cores then results in an efficiency gain assuming proper optimal parallelization is configured.                                    <br>
-                                    <br>
                                     <figure>
                                         <img src="Resources/DS 5110/images/7.png" alt="Single instance architecture details" class="center-image"/>
                                         <figcaption>Single instance architecture details</figcaption>
