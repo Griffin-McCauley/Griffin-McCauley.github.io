@@ -210,7 +210,6 @@
                                         <figure>
                                             <img src="Resources/DS 5110/images/1.png" alt="Hyperparameter Search Grid" class="center-image"/>
                                         </figure>
-                                    <br>
                                         3. Select the best model hyperparameters (lowest MSE).
                                     <br>
                                         4. Retrain a new model with a larger number of trees using the train and validate datasets as the training data.
@@ -255,7 +254,6 @@
                                         <img src="Resources/DS 5110/images/2.png" alt="Overview of research architecture" class="center-image"/>
                                         <figcaption>Overview of research architecture</figcaption>
                                     </figure>
-                                    <br>
                                     Beginning with the raw data for each stock, the original data was transformed into a format that could serve as an input to a random forest regression model. This required the creation of 10 lag variables for the target variable of TYPPRICE and the removal of all extraneous feature columns and rows containing NAs. Following this basic cleaning, the data was then split into training, validation, and testing sets and stored in folders within the appropriate stock's bucket.
                                     <br>
                                     <br>
@@ -306,12 +304,10 @@
                                         <img src="Resources/DS 5110/images/3.png" alt="Empirical runtime analysis breakdown for each function" class="center-image"/>
                                         <figcaption>Empirical runtime analysis breakdown for each function</figcaption>
                                     </figure>
-                                    <br>
                                     <figure>
                                         <img src="Resources/DS 5110/images/4.png" alt="Sequential runtime analysis breakdown for each function" class="center-image"/>
                                         <figcaption>Sequential runtime analysis breakdown for each function</figcaption>
                                     </figure>
-                                    <br>
                                     Based on these tabular results, the dramatic runtime efficiency gain induced by the parallelized infrastructure is apparent. This research's entire process was able to successfully complete in 38.96 minutes. If it had been run in a fully sequentially manner with the same computing resources, this would have taken nearly 300 hours, thus representing a 99\% improvement. While this improvement is quite staggering, it is not particularly surprising given that the longest running computational steps performed by the Parampreds and Trainfull functions were invoked with the highest concurrency levels of 2700 and 3000, respectively. Since the concurrency limit was only set to 1000, these two massively parallel and asynchronous function invocations also experienced meaningful throttling which delayed their overall completion by a factor of almost 3x. Therefore, with a higher concurrency limit, these times could be reduced further, and, based on the current invocation runtime results, the entire runtime for the process could be limited to 16.14 minutes if fully parallelized without throttling.
                                     <br>
                                     <br>
@@ -321,12 +317,10 @@
                                         <img src="Resources/DS 5110/images/5.png" alt="Kernel density plots for executor computation durations" class="center-image"/>
                                         <figcaption>Kernel density plots for executor computation durations</figcaption>
                                     </figure>
-                                    <br>
                                     <figure>
                                         <img src="Resources/DS 5110/images/6.png" alt="Kernel density plots for executor I/O durations" class="center-image"/>
                                         <figcaption>Kernel density plots for executor I/O durations</figcaption>
                                     </figure>
-                                    <br>
                                     From these plots, it is readily apparent which functions require the longest amount of time to complete their given tasks. However, they also offer additional insights into the performance spread across the various executors. While most of the distributions are relatively mound shaped and symmetrical with small standard deviations, a few of the functions do exhibit noteworthy behavior. In particular, the computation time for Parampreds' executors varies greatly due to the different hyperparameter configurations. The I/O time for the Predmses' invocations has a fascinating plateau profile due to the manner in which it traverses all hyperparameter permutations for a given stock. Overall, these graphics offer a more granular understanding of the behavior of each of these functions and allow for quick comparisons between them.
                                 </p>
                             </div>
@@ -339,12 +333,10 @@
                                         <img src="Resources/DS 5110/images/7.png" alt="Single instance architecture details" class="center-image"/>
                                         <figcaption>Single instance architecture details</figcaption>
                                     </figure>
-                                    <br>
                                     <figure>
                                         <img src="Resources/DS 5110/images/8.png" alt="Single instance performance and cost details" class="center-image"/>
                                         <figcaption>Single instance performance and cost details</figcaption>
                                     </figure>
-                                    <br>
                                     The latter table shows that Lambda accomplishes a 99\% runtime improvement over the t4g.xlarge EC2 instance. Lambda even maintains a 15 minute improvement over the best EC2 instance, the c6a.48xlarge. These results come with heavy caveats but the assumptions hold that the order of magnitude improvement is considerable. These runtime savings do not even factor in the more user friendly Lambda infrastructure which can be far easier to maintain than the EC2 overhead. Clearly, these results show that Lambda possesses tremendous runtime benefits over traditional serverful computing options when applied for embarrassingly parallel modeling.
                                     <br>
                                     <br>
